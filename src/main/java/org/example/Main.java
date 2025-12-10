@@ -12,6 +12,6 @@ public class Main {
         //Activando la conexion
         ConexionBD conexion = new ConexionBD();
         //Creando las tablas
-        //conexion.crear_tabla_estudiante();
+        //new SchemaCreator().crearTablas();
     }
 }
