@@ -1,39 +1,165 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
+# ===================================================
+# .gitignore para Java + IntelliJ IDEA
+# ===================================================
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+# === Archivos Compilados de Java ===
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# === Archivos de Log ===
+*.log
+logs/
+
+# === Base de Datos H2 ===
+*.db
+*.mv.db
+*.trace.db
+envios_db.mv.db
+~/envios_db.*
+
+# === Maven ===
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# === Gradle ===
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# === IntelliJ IDEA ===
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
+.idea_modules/
 
-### Eclipse ###
-.apt_generated
+# Mantener solo la configuración del proyecto (opcional)
+!.idea/runConfigurations/
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+
+# === Eclipse ===
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# === NetBeans ===
+nbproject/private/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+nbactions.xml
 
-### VS Code ###
+# === VS Code ===
 .vscode/
+*.code-workspace
+.history/
 
-### Mac OS ###
+# === Sistema Operativo ===
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# === Archivos Temporales ===
+*.swp
+*.swo
+*~
+.#*
+\#*#
+.*.kate-swp
+.swp.*
+
+# === Archivos de Configuración Local ===
+application-local.properties
+application-local.yml
+config/local/
+
+# === Carpetas de Dependencias ===
+node_modules/
+vendor/
+
+# === Archivos de Seguridad ===
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+secrets/
+.env
+.env.local
+
+# === Archivos de Test ===
+test-output/
+.pytest_cache/
+coverage/
+*.cover
+.hypothesis/
+
+# === Otros ===
+*.orig
+.metadata
+.recommenders/
+RemoteSystemsTempFiles/
