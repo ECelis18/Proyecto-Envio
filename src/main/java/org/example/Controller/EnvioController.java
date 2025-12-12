@@ -7,8 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Controlador que implementa operaciones CRUD para envíos
 public class EnvioController implements IEnvioController {
 
+    // Crear un nuevo envío   Sebas
     @Override
     public Integer crearEnvio(Envio envio) {
         Connection conexion = null;
@@ -17,17 +19,13 @@ public class EnvioController implements IEnvioController {
 
         try {
             conexion = new ConexionBD().conectar();
-            if (conexion == null) {
-                System.out.println("Error: No se pudo conectar a la BD");
-                return null;
-            }
+            if (conexion == null) return null;
 
-            // VALIDACIÓN SIMPLE: Si no hay nombre, usar valor por defecto
+            // Validaciones
             if (envio.getNombreUsuario() == null || envio.getNombreUsuario().trim().isEmpty()) {
                 envio.setNombreUsuario("Cliente " + envio.getIdUsuario());
             }
 
-            // Validar dirección
             if (envio.getDireccionDestino() == null || envio.getDireccionDestino().trim().isEmpty()) {
                 System.out.println("Error: La dirección destino es obligatoria");
                 return null;
@@ -37,12 +35,13 @@ public class EnvioController implements IEnvioController {
                 envio.setEstado("PENDIENTE");
             }
 
-            // IMPORTANTE: Usar nombre_usuario (nombre de columna en BD) no nombre_usuario
+            // SQL para insertar
             String sql = "INSERT INTO envios (id_paquete, id_usuario, nombre_usuario, direccion_destino, estado, " +
                     "fecha_envio, fecha_entrega, costo_envio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             statement = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
+            // Asignar valores
             statement.setInt(1, envio.getIdPaquete());
             statement.setInt(2, envio.getIdUsuario());
             statement.setString(3, envio.getNombreUsuario());
@@ -87,6 +86,7 @@ public class EnvioController implements IEnvioController {
         }
     }
 
+    // Buscar envío por ID  Sara
     @Override
     public Envio buscarEnvio(Integer id) {
         Connection conexion = null;
@@ -95,10 +95,7 @@ public class EnvioController implements IEnvioController {
 
         try {
             conexion = new ConexionBD().conectar();
-            if (conexion == null) {
-                System.out.println("Error: No se pudo conectar a la BD");
-                return null;
-            }
+            if (conexion == null) return null;
 
             String sql = "SELECT * FROM envios WHERE id = ?";
             statement = conexion.prepareStatement(sql);
@@ -130,17 +127,13 @@ public class EnvioController implements IEnvioController {
         }
     }
 
-    // MÉTODO ÚNICO PARA MAPEAR - ELIMINA EL DUPLICADO
+    // Método para convertir ResultSet a objeto Envio
     private Envio mapearResultSetAEnvio(ResultSet resultado) throws SQLException {
         Envio envio = new Envio();
         envio.setId(resultado.getInt("id"));
         envio.setIdPaquete(resultado.getInt("id_paquete"));
         envio.setIdUsuario(resultado.getInt("id_usuario"));
-
-        // IMPORTANTE: nombre_usuario es el nombre de la columna en BD
-        // nombreUsuario es el nombre del campo en Java
         envio.setNombreUsuario(resultado.getString("nombre_usuario"));
-
         envio.setDireccionDestino(resultado.getString("direccion_destino"));
         envio.setEstado(resultado.getString("estado"));
         envio.setFechaEnvio(resultado.getDate("fecha_envio").toLocalDate());
@@ -154,6 +147,7 @@ public class EnvioController implements IEnvioController {
         return envio;
     }
 
+    // Actualizar envío completo  Omar
     @Override
     public Boolean actualizarEnvio(Envio envio) {
         Connection conexion = null;
@@ -161,17 +155,14 @@ public class EnvioController implements IEnvioController {
 
         try {
             conexion = new ConexionBD().conectar();
-            if (conexion == null) {
-                System.out.println("Error: No se pudo conectar a la BD");
-                return false;
-            }
+            if (conexion == null) return false;
 
             if (envio.getId() == null) {
                 System.out.println("Error: El ID del envío es requerido para actualizar");
                 return false;
             }
 
-            // Si no hay nombre, usar valor por defecto
+            // Validación de nombre
             if (envio.getNombreUsuario() == null || envio.getNombreUsuario().trim().isEmpty()) {
                 envio.setNombreUsuario("Cliente " + envio.getIdUsuario());
             }
@@ -191,7 +182,7 @@ public class EnvioController implements IEnvioController {
 
             statement.setInt(1, envio.getIdPaquete());
             statement.setInt(2, envio.getIdUsuario());
-            statement.setString(3, envio.getNombreUsuario());  // nombreUsuario en Java
+            statement.setString(3, envio.getNombreUsuario());
             statement.setString(4, envio.getDireccionDestino());
             statement.setString(5, envio.getEstado());
             statement.setDate(6, Date.valueOf(envio.getFechaEnvio()));
@@ -229,6 +220,7 @@ public class EnvioController implements IEnvioController {
         }
     }
 
+    // Eliminar envío por ID   Daniel
     @Override
     public Boolean eliminarEnvio(Integer id) {
         Connection conexion = null;
@@ -236,12 +228,9 @@ public class EnvioController implements IEnvioController {
 
         try {
             conexion = new ConexionBD().conectar();
-            if (conexion == null) {
-                System.out.println("Error: No se pudo conectar a la BD");
-                return false;
-            }
+            if (conexion == null) return false;
 
-            // Mostrar información antes de eliminar
+            // Verificar si existe antes de eliminar
             Envio envioExistente = buscarEnvio(id);
             if (envioExistente == null) {
                 System.out.println("⚠️ No se puede eliminar. Envío con ID " + id + " no existe");
@@ -278,7 +267,7 @@ public class EnvioController implements IEnvioController {
         }
     }
 
-    // Método adicional para actualizar solo el estado
+    // Método para actualizar solo el estado omar
     public Boolean actualizarEstadoEnvio(Integer idEnvio, String nuevoEstado) {
         Connection conexion = null;
         PreparedStatement statement = null;
@@ -316,7 +305,7 @@ public class EnvioController implements IEnvioController {
         }
     }
 
-    // Método para listar todos los envíos
+    // Listar todos los envíos Sara
     public List<Envio> listarTodosEnvios() {
         List<Envio> envios = new ArrayList<>();
 

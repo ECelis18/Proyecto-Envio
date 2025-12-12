@@ -8,23 +8,27 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+// Clase principal del programa - Menú de envíos
 public class Main {
+    // Variables globales
     private static final Scanner scanner = new Scanner(System.in);
     private static final EnvioController envioController = new EnvioController();
     private static final ConexionBD conexionBD = new ConexionBD();
 
+    // Método principal
     public static void main(String[] args) throws Exception {
-        // Inicializar base de datos
+        // Iniciar base de datos
         conexionBD.inicializarTodasLasTablas();
 
-        // Consola H2 en http://localhost:8082
+        // Iniciar consola web de H2 (http://localhost:8082)
         Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
 
-        System.out.println("🚚 SISTEMA DE GESTIÓN DE ENVÍOS - GLOBAL INTEGRADOR");
-        System.out.println("===================================================\n");
+        System.out.println("🚚 SISTEMA DE GESTIÓN DE ENVÍOS");
+        System.out.println("================================\n");
 
         boolean continuar = true;
 
+        // Menú principal
         while (continuar) {
             mostrarMenu();
             int opcion = obtenerOpcion();
@@ -37,12 +41,13 @@ public class Main {
                 case 5: eliminarEnvio(); break;
                 case 0:
                     continuar = false;
-                    System.out.println("\n👋 ¡Gracias por usar el sistema de envíos!");
+                    System.out.println("\n👋 ¡Gracias por usar el sistema!");
                     break;
                 default:
-                    System.out.println("❌ Opción no válida. Intente de nuevo.");
+                    System.out.println("❌ Opción no válida");
             }
 
+            // Pausa entre operaciones
             if (continuar) {
                 System.out.println("\nPresione Enter para continuar...");
                 scanner.nextLine();
@@ -52,17 +57,19 @@ public class Main {
         scanner.close();
     }
 
+    // Mostrar menú de opciones
     private static void mostrarMenu() {
         System.out.println("\n=== MENÚ PRINCIPAL ===");
-        System.out.println("1. 📦 Crear nuevo envío");
-        System.out.println("2. 🔍 Buscar envío por ID");
-        System.out.println("3. 📋 Listar todos los envíos");
-        System.out.println("4. ✏️ Actualizar envío completo");
-        System.out.println("5. 🗑️ Eliminar envío por ID");
-        System.out.println("0. ❌ Salir del sistema");
-        System.out.print("\nSeleccione una opción: ");
+        System.out.println("1. 📦 Crear envío");
+        System.out.println("2. 🔍 Buscar envío");
+        System.out.println("3. 📋 Listar todos");
+        System.out.println("4. ✏️ Actualizar");
+        System.out.println("5. 🗑️ Eliminar");
+        System.out.println("0. ❌ Salir");
+        System.out.print("\nSeleccione opción: ");
     }
 
+    // Leer opción del usuario
     private static int obtenerOpcion() {
         try {
             return Integer.parseInt(scanner.nextLine());
@@ -71,30 +78,31 @@ public class Main {
         }
     }
 
+    // Crear nuevo envío
     private static void crearEnvio() {
-        System.out.println("\n=== CREAR NUEVO ENVÍO ===");
+        System.out.println("\n=== CREAR ENVÍO ===");
 
         try {
-            System.out.print("ID del paquete: ");
+            System.out.print("ID paquete: ");
             int idPaquete = Integer.parseInt(scanner.nextLine());
 
-            System.out.print("ID del usuario: ");
+            System.out.print("ID usuario: ");
             int idUsuario = Integer.parseInt(scanner.nextLine());
 
-            System.out.print("Nombre y apellido del cliente: ");
+            System.out.print("Nombre cliente: ");
             String nombreCliente = scanner.nextLine();
 
-            System.out.print("Dirección destino: ");
+            System.out.print("Dirección: ");
             String direccion = scanner.nextLine();
 
-            System.out.print("Estado (PENDIENTE/EN_TRANSITO/ENTREGADO/CANCELADO): ");
+            System.out.print("Estado: ");
             String estado = scanner.nextLine();
             if (estado.isEmpty()) estado = "PENDIENTE";
 
-            System.out.print("Costo de envío: ");
+            System.out.print("Costo: ");
             double costo = Double.parseDouble(scanner.nextLine());
 
-            // Crear objeto Envio
+            // Crear objeto envío
             Envio nuevoEnvio = new Envio();
             nuevoEnvio.setIdPaquete(idPaquete);
             nuevoEnvio.setIdUsuario(idUsuario);
@@ -104,27 +112,27 @@ public class Main {
             nuevoEnvio.setFechaEnvio(LocalDate.now());
             nuevoEnvio.setCostoEnvio(costo);
 
-            // Llamar al controlador
+            // Guardar en base de datos
             Integer idGenerado = envioController.crearEnvio(nuevoEnvio);
 
             if (idGenerado != null) {
-                System.out.println("\n✅ ¡Envío creado exitosamente!");
-                System.out.println("📌 ID asignado: " + idGenerado);
-                System.out.println("👤 Cliente: " + nombreCliente);
+                System.out.println("\n✅ Envío creado!");
+                System.out.println("ID: " + idGenerado);
             } else {
-                System.out.println("\n❌ Error al crear el envío");
+                System.out.println("\n❌ Error al crear envío");
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("❌ Error: Ingrese valores numéricos válidos");
+            System.out.println("❌ Error: Ingrese números válidos");
         }
     }
 
+    // Buscar envío por ID
     private static void buscarEnvio() {
-        System.out.println("\n=== BUSCAR ENVÍO POR ID ===");
+        System.out.println("\n=== BUSCAR ENVÍO ===");
 
         try {
-            System.out.print("Ingrese el ID del envío: ");
+            System.out.print("ID del envío: ");
             int id = Integer.parseInt(scanner.nextLine());
 
             Envio envio = envioController.buscarEnvio(id);
@@ -132,67 +140,70 @@ public class Main {
             if (envio != null) {
                 mostrarDetallesEnvio(envio);
             } else {
-                System.out.println("❌ No se encontró ningún envío con ID: " + id);
+                System.out.println("❌ No se encontró envío con ID: " + id);
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("❌ Error: Ingrese un ID válido");
+            System.out.println("❌ Error: Ingrese ID válido");
         }
     }
 
+    // Listar todos los envíos
     private static void listarTodosEnvios() {
-        System.out.println("\n=== LISTADO DE TODOS LOS ENVÍOS ===");
+        System.out.println("\n=== LISTA DE ENVÍOS ===");
 
         List<Envio> envios = envioController.listarTodosEnvios();
 
         if (envios.isEmpty()) {
-            System.out.println("📭 No hay envíos registrados en el sistema");
+            System.out.println("📭 No hay envíos");
         } else {
-            System.out.println("📊 Total de envíos: " + envios.size());
+            System.out.println("Total: " + envios.size());
             System.out.println("\n" + "-".repeat(100));
 
             for (Envio envio : envios) {
-                System.out.printf("ID: %-5d | Cliente: %-20s | Paquete: %-5d | Estado: %-12s\n",
-                        envio.getId(), envio.getNombreUsuario(), envio.getIdPaquete(), envio.getEstado());
-                System.out.printf("Destino: %-30s | Fecha: %s | Costo: $%-8.2f\n",
-                        envio.getDireccionDestino(), envio.getFechaEnvio(), envio.getCostoEnvio());
+                System.out.printf("ID: %-5d | Cliente: %-20s | Estado: %-12s\n",
+                        envio.getId(), envio.getNombreUsuario(), envio.getEstado());
+                System.out.printf("Destino: %-30s | Fecha: %s\n",
+                        envio.getDireccionDestino(), envio.getFechaEnvio());
                 System.out.println("-".repeat(100));
             }
         }
     }
 
+    // Actualizar envío existente
     private static void actualizarEnvio() {
-        System.out.println("\n=== ACTUALIZAR ENVÍO COMPLETO ===");
+        System.out.println("\n=== ACTUALIZAR ENVÍO ===");
 
         try {
-            System.out.print("ID del envío a actualizar: ");
+            System.out.print("ID del envío: ");
             int id = Integer.parseInt(scanner.nextLine());
 
-            // Primero buscar el envío existente
+            // Buscar envío
             Envio envioExistente = envioController.buscarEnvio(id);
 
             if (envioExistente == null) {
-                System.out.println("❌ No se encontró el envío con ID: " + id);
+                System.out.println("❌ Envío no encontrado");
                 return;
             }
 
             System.out.println("\nEnvío actual:");
             mostrarDetallesEnvio(envioExistente);
-            System.out.println("\nIngrese los nuevos valores (dejar vacío para mantener actual):");
+            System.out.println("\nNuevos valores (vacío = mantener):");
 
-            System.out.print("ID del paquete [" + envioExistente.getIdPaquete() + "]: ");
+            // Pedir nuevos datos
+            System.out.print("ID paquete [" + envioExistente.getIdPaquete() + "]: ");
             String idPaqueteStr = scanner.nextLine();
             int idPaquete = idPaqueteStr.isEmpty() ? envioExistente.getIdPaquete() : Integer.parseInt(idPaqueteStr);
 
-            System.out.print("ID del usuario [" + envioExistente.getIdUsuario() + "]: ");
+            System.out.print("ID usuario [" + envioExistente.getIdUsuario() + "]: ");
             String idUsuarioStr = scanner.nextLine();
             int idUsuario = idUsuarioStr.isEmpty() ? envioExistente.getIdUsuario() : Integer.parseInt(idUsuarioStr);
 
-            System.out.print("Nombre del cliente [" + envioExistente.getNombreUsuario() + "]: ");
+            System.out.print("Nombre [" + envioExistente.getNombreUsuario() + "]: ");
             String nombreCliente = scanner.nextLine();
             if (nombreCliente.isEmpty()) nombreCliente = envioExistente.getNombreUsuario();
 
-            System.out.print("Dirección destino [" + envioExistente.getDireccionDestino() + "]: ");
+            System.out.print("Dirección [" + envioExistente.getDireccionDestino() + "]: ");
             String direccion = scanner.nextLine();
             if (direccion.isEmpty()) direccion = envioExistente.getDireccionDestino();
 
@@ -200,11 +211,11 @@ public class Main {
             String estado = scanner.nextLine();
             if (estado.isEmpty()) estado = envioExistente.getEstado();
 
-            System.out.print("Costo de envío [" + envioExistente.getCostoEnvio() + "]: ");
+            System.out.print("Costo [" + envioExistente.getCostoEnvio() + "]: ");
             String costoStr = scanner.nextLine();
             double costo = costoStr.isEmpty() ? envioExistente.getCostoEnvio() : Double.parseDouble(costoStr);
 
-            // Crear objeto actualizado
+            // Crear envío actualizado
             Envio envioActualizado = new Envio();
             envioActualizado.setId(id);
             envioActualizado.setIdPaquete(idPaquete);
@@ -215,78 +226,77 @@ public class Main {
             envioActualizado.setFechaEnvio(envioExistente.getFechaEnvio());
             envioActualizado.setCostoEnvio(costo);
 
-            // Si está ENTREGADO, agregar fecha de entrega
+            // Si está ENTREGADO y no tenía fecha, poner fecha actual
             if (estado.equals("ENTREGADO") && envioExistente.getFechaEntrega() == null) {
                 envioActualizado.setFechaEntrega(LocalDate.now());
             } else {
                 envioActualizado.setFechaEntrega(envioExistente.getFechaEntrega());
             }
 
+            // Guardar cambios
             boolean actualizado = envioController.actualizarEnvio(envioActualizado);
 
             if (actualizado) {
-                System.out.println("\n✅ Envío actualizado correctamente");
-                System.out.println("\nEnvío actualizado:");
-                Envio envioVerificado = envioController.buscarEnvio(id);
-                mostrarDetallesEnvio(envioVerificado);
+                System.out.println("\n✅ Envío actualizado");
             } else {
-                System.out.println("\n❌ Error al actualizar el envío");
+                System.out.println("\n❌ Error al actualizar");
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("❌ Error: Ingrese valores válidos");
+            System.out.println("❌ Error: Valores inválidos");
         }
     }
 
+    // Eliminar envío
     private static void eliminarEnvio() {
         System.out.println("\n=== ELIMINAR ENVÍO ===");
 
         try {
-            System.out.print("ID del envío a eliminar: ");
+            System.out.print("ID del envío: ");
             int id = Integer.parseInt(scanner.nextLine());
 
-            // Primero mostrar información del envío
+            // Mostrar info del envío
             Envio envioExistente = envioController.buscarEnvio(id);
             if (envioExistente != null) {
                 System.out.println("Cliente: " + envioExistente.getNombreUsuario());
-                System.out.println("Destino: " + envioExistente.getDireccionDestino());
             }
 
-            System.out.print("¿Está seguro de eliminar este envío? (S/N): ");
+            // Confirmar
+            System.out.print("¿Eliminar? (S/N): ");
             String confirmacion = scanner.nextLine().toUpperCase();
 
             if (confirmacion.equals("S")) {
                 boolean eliminado = envioController.eliminarEnvio(id);
 
                 if (eliminado) {
-                    System.out.println("✅ Envío eliminado correctamente");
+                    System.out.println("✅ Envío eliminado");
                 } else {
-                    System.out.println("❌ Error al eliminar el envío");
+                    System.out.println("❌ Error al eliminar");
                 }
             } else {
-                System.out.println("⚠️ Operación cancelada");
+                System.out.println("⚠️ Cancelado");
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("❌ Error: Ingrese un ID válido");
+            System.out.println("❌ Error: ID inválido");
         }
     }
 
+    // Mostrar detalles de un envío
     private static void mostrarDetallesEnvio(Envio envio) {
         if (envio == null) return;
 
-        System.out.println("\n📄 DETALLES DEL ENVÍO");
-        System.out.println("=====================");
+        System.out.println("\n📄 DETALLES");
+        System.out.println("===========");
         System.out.println("ID: " + envio.getId());
-        System.out.println("ID Paquete: " + envio.getIdPaquete());
-        System.out.println("ID Usuario: " + envio.getIdUsuario());
+        System.out.println("Paquete: " + envio.getIdPaquete());
+        System.out.println("Usuario: " + envio.getIdUsuario());
         System.out.println("Cliente: " + envio.getNombreUsuario());
-        System.out.println("Dirección destino: " + envio.getDireccionDestino());
+        System.out.println("Dirección: " + envio.getDireccionDestino());
         System.out.println("Estado: " + envio.getEstado());
         System.out.println("Fecha envío: " + envio.getFechaEnvio());
-        System.out.println("Fecha entrega: " +
-                (envio.getFechaEntrega() != null ? envio.getFechaEntrega() : "Pendiente"));
-        System.out.println("Costo envío: $" + String.format("%.2f", envio.getCostoEnvio()));
-        System.out.println("=====================");
+        System.out.println("Fecha entrega: " + (envio.getFechaEntrega() != null ? envio.getFechaEntrega() : "Pendiente"));
+        System.out.println("Costo: $" + String.format("%.2f", envio.getCostoEnvio()));
+        System.out.println("===========");
     }
 }
