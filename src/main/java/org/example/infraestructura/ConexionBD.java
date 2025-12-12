@@ -31,7 +31,6 @@ public class ConexionBD {
         String crearTablaQUERY = """
         CREATE TABLE IF NOT EXISTS ENVIOS (
             ID INT PRIMARY KEY AUTO_INCREMENT,
-            ID_PAQUETE INT NOT NULL,
             ID_USUARIO INT NOT NULL,
             NOMBRE_USUARIO VARCHAR(255) NOT NULL,  -- NUEVA COLUMNA
             DIRECCION_DESTINO VARCHAR(255) NOT NULL,

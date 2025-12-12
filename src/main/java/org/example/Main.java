@@ -83,9 +83,6 @@ public class Main {
         System.out.println("\n=== CREAR ENVÍO ===");
 
         try {
-            System.out.print("ID paquete: ");
-            int idPaquete = Integer.parseInt(scanner.nextLine());
-
             System.out.print("ID usuario: ");
             int idUsuario = Integer.parseInt(scanner.nextLine());
 
@@ -95,7 +92,7 @@ public class Main {
             System.out.print("Dirección: ");
             String direccion = scanner.nextLine();
 
-            System.out.print("Estado: ");
+            System.out.print("Estado (PENDIENTE/EN_TRANSITO/ENTREGADO/CANCELADO): ");
             String estado = scanner.nextLine();
             if (estado.isEmpty()) estado = "PENDIENTE";
 
@@ -104,7 +101,6 @@ public class Main {
 
             // Crear objeto envío
             Envio nuevoEnvio = new Envio();
-            nuevoEnvio.setIdPaquete(idPaquete);
             nuevoEnvio.setIdUsuario(idUsuario);
             nuevoEnvio.setNombreUsuario(nombreCliente);
             nuevoEnvio.setDireccionDestino(direccion);
@@ -191,10 +187,6 @@ public class Main {
             System.out.println("\nNuevos valores (vacío = mantener):");
 
             // Pedir nuevos datos
-            System.out.print("ID paquete [" + envioExistente.getIdPaquete() + "]: ");
-            String idPaqueteStr = scanner.nextLine();
-            int idPaquete = idPaqueteStr.isEmpty() ? envioExistente.getIdPaquete() : Integer.parseInt(idPaqueteStr);
-
             System.out.print("ID usuario [" + envioExistente.getIdUsuario() + "]: ");
             String idUsuarioStr = scanner.nextLine();
             int idUsuario = idUsuarioStr.isEmpty() ? envioExistente.getIdUsuario() : Integer.parseInt(idUsuarioStr);
@@ -218,7 +210,6 @@ public class Main {
             // Crear envío actualizado
             Envio envioActualizado = new Envio();
             envioActualizado.setId(id);
-            envioActualizado.setIdPaquete(idPaquete);
             envioActualizado.setIdUsuario(idUsuario);
             envioActualizado.setNombreUsuario(nombreCliente);
             envioActualizado.setDireccionDestino(direccion);
@@ -289,7 +280,6 @@ public class Main {
         System.out.println("\n📄 DETALLES");
         System.out.println("===========");
         System.out.println("ID: " + envio.getId());
-        System.out.println("Paquete: " + envio.getIdPaquete());
         System.out.println("Usuario: " + envio.getIdUsuario());
         System.out.println("Cliente: " + envio.getNombreUsuario());
         System.out.println("Dirección: " + envio.getDireccionDestino());

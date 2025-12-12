@@ -3,7 +3,6 @@ import java.time.LocalDate;
 
 public class Envio {
     private Integer id;
-    private Integer idPaquete;
     private Integer idUsuario;
     private String nombreUsuario;  // NUEVO CAMPO
     private String direccionDestino;
@@ -15,11 +14,10 @@ public class Envio {
     // Constructores, getters y setters
     public Envio() {}
 
-    public Envio(Integer id, Integer idPaquete, Integer idUsuario, String nombreUsuario,
+    public Envio(Integer id, Integer idUsuario, String nombreUsuario,
                  String direccionDestino, String estado, LocalDate fechaEnvio,
                  LocalDate fechaEntrega, Double costoEnvio) {
         this.id = id;
-        this.idPaquete = idPaquete;
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.direccionDestino = direccionDestino;
@@ -34,9 +32,6 @@ public class Envio {
     // Getters y Setters (todos)
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-
-    public Integer getIdPaquete() { return idPaquete; }
-    public void setIdPaquete(Integer idPaquete) { this.idPaquete = idPaquete; }
 
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }

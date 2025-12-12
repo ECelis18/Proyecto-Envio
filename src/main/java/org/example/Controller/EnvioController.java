@@ -36,26 +36,25 @@ public class EnvioController implements IEnvioController {
             }
 
             // SQL para insertar
-            String sql = "INSERT INTO envios (id_paquete, id_usuario, nombre_usuario, direccion_destino, estado, " +
-                    "fecha_envio, fecha_entrega, costo_envio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO envios (id_usuario, nombre_usuario, direccion_destino, estado, " +
+                    "fecha_envio, fecha_entrega, costo_envio) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             statement = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // Asignar valores
-            statement.setInt(1, envio.getIdPaquete());
-            statement.setInt(2, envio.getIdUsuario());
-            statement.setString(3, envio.getNombreUsuario());
-            statement.setString(4, envio.getDireccionDestino());
-            statement.setString(5, envio.getEstado());
-            statement.setDate(6, Date.valueOf(envio.getFechaEnvio()));
+            statement.setInt(1, envio.getIdUsuario());
+            statement.setString(2, envio.getNombreUsuario());
+            statement.setString(3, envio.getDireccionDestino());
+            statement.setString(4, envio.getEstado());
+            statement.setDate(5, Date.valueOf(envio.getFechaEnvio()));
 
             if (envio.getFechaEntrega() != null) {
-                statement.setDate(7, Date.valueOf(envio.getFechaEntrega()));
+                statement.setDate(6, Date.valueOf(envio.getFechaEntrega()));
             } else {
-                statement.setNull(7, Types.DATE);
+                statement.setNull(6, Types.DATE);
             }
 
-            statement.setDouble(8, envio.getCostoEnvio());
+            statement.setDouble(7, envio.getCostoEnvio());
 
             int filasAfectadas = statement.executeUpdate();
 
@@ -131,7 +130,6 @@ public class EnvioController implements IEnvioController {
     private Envio mapearResultSetAEnvio(ResultSet resultado) throws SQLException {
         Envio envio = new Envio();
         envio.setId(resultado.getInt("id"));
-        envio.setIdPaquete(resultado.getInt("id_paquete"));
         envio.setIdUsuario(resultado.getInt("id_usuario"));
         envio.setNombreUsuario(resultado.getString("nombre_usuario"));
         envio.setDireccionDestino(resultado.getString("direccion_destino"));
@@ -168,7 +166,6 @@ public class EnvioController implements IEnvioController {
             }
 
             String sql = "UPDATE envios SET " +
-                    "id_paquete = ?, " +
                     "id_usuario = ?, " +
                     "nombre_usuario = ?, " +
                     "direccion_destino = ?, " +
@@ -180,21 +177,20 @@ public class EnvioController implements IEnvioController {
 
             statement = conexion.prepareStatement(sql);
 
-            statement.setInt(1, envio.getIdPaquete());
-            statement.setInt(2, envio.getIdUsuario());
-            statement.setString(3, envio.getNombreUsuario());
-            statement.setString(4, envio.getDireccionDestino());
-            statement.setString(5, envio.getEstado());
-            statement.setDate(6, Date.valueOf(envio.getFechaEnvio()));
+            statement.setInt(1, envio.getIdUsuario());
+            statement.setString(2, envio.getNombreUsuario());
+            statement.setString(3, envio.getDireccionDestino());
+            statement.setString(4, envio.getEstado());
+            statement.setDate(5, Date.valueOf(envio.getFechaEnvio()));
 
             if (envio.getFechaEntrega() != null) {
-                statement.setDate(7, Date.valueOf(envio.getFechaEntrega()));
+                statement.setDate(6, Date.valueOf(envio.getFechaEntrega()));
             } else {
-                statement.setNull(7, Types.DATE);
+                statement.setNull(6, Types.DATE);
             }
 
-            statement.setDouble(8, envio.getCostoEnvio());
-            statement.setInt(9, envio.getId());
+            statement.setDouble(7, envio.getCostoEnvio());
+            statement.setInt(8, envio.getId());
 
             int filasAfectadas = statement.executeUpdate();
 
